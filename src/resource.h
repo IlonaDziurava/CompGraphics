@@ -25,6 +25,7 @@ namespace cg
 
 		size_t size_bytes() const;
 		size_t count() const;
+		size_t get_number_of_elements() const;
 		size_t get_stride() const;
 
 	private:
