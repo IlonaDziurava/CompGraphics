@@ -44,8 +44,8 @@ void model::allocate_buffers(const std::vector<tinyobj::shape_t>& shapes)
 	for (const auto& shape : shapes)
 	{
 		size_t index_offset = 0;
-		size_t vertex_buffer_size = 0;
-		size_t index_buffer_size = 0;
+		unsigned int vertex_buffer_size = 0;
+		unsigned int index_buffer_size = 0;
 		std::map<std::tuple<int, int, int>, unsigned int> index_map;
 		const auto& mesh = shape.mesh;
 		for (const auto & fv: mesh.num_face_vertices)

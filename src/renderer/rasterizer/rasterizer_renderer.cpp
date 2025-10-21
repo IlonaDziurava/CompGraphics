@@ -62,7 +62,7 @@ void cg::renderer::rasterization_renderer::render()
 	};
 
 	rasterizer->pixel_shader = [](cg::vertex vertex_data, float z) {
-		return cg::color::from_float3(vertex_data.ambient);
+		return cg::color::from_float3(float3(vertex_data.ambient_r, vertex_data.ambient_g, vertex_data.ambient_b));
 	};
 
 	auto start = std::chrono::high_resolution_clock::now();

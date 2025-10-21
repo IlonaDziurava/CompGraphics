@@ -108,6 +108,4 @@ void cg::renderer::renderer::load_camera()
 	camera->set_position({0.f, 0.f, -5.f}); 
 	camera->set_phi(0.f); 
 	camera->set_theta(0.f); 
-
-	camera->update_transform(); 
 }
