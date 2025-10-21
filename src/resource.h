@@ -83,6 +83,12 @@ namespace cg
 	}
 
 	template<typename T>
+	inline size_t resource<T>::get_number_of_elements() const
+	{
+		return count();
+	}
+
+	template<typename T>
 	inline size_t resource<T>::get_stride() const
 	{
 		// DO Lab: 1.02 Implement `cg::resource` class
