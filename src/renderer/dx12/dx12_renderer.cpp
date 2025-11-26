@@ -255,7 +255,7 @@ void cg::renderer::dx12_renderer::create_root_signature(const D3D12_STATIC_SAMPL
 
 std::filesystem::path cg::renderer::dx12_renderer::get_shader_path()
 {
-	char buffer[MAX_PATH];
+	wchar_t buffer[MAX_PATH];
 	GetModuleFileName(nullptr, buffer, MAX_PATH);
 	return std::filesystem::path(buffer).parent_path() / "shaders.hlsl";
 }
@@ -456,7 +456,7 @@ void cg::renderer::dx12_renderer::load_assets()
 		auto index_buffer_data = model->get_index_buffers()[i];
 		const UINT index_buffer_size = static_cast<UINT>(
 			index_buffer_data->size_bytes());
-			
+
 		std::wstring index_buffer_name(L"Index buffer ");
 		index_buffer_name += std::to_wstring(i);
 
