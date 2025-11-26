@@ -75,7 +75,7 @@ void cg::renderer::dx12_renderer::update()
 	
 	// Set light position orbiting around the scene
 	float radius = 5.0f;
-	cb.light.position = DirectX::XMFLOAT4(
+	cb.lightPosition = float4(
 		radius * cosf(light_angle),
 		3.0f,
 		radius * sinf(light_angle),
@@ -83,11 +83,11 @@ void cg::renderer::dx12_renderer::update()
 	);
 	
 	// Set light color (warm white with slight yellow tint)
-	cb.light.color = DirectX::XMFLOAT4(1.0f, 0.95f, 0.8f, 1.0f);
+	cb.lightColor = float4(1.0f, 0.95f, 0.8f, 1.0f);
 	
 	// Get camera position for specular lighting
 	auto cam_pos = camera->get_position();
-	cb.cameraPosition = DirectX::XMFLOAT4(cam_pos.x, cam_pos.y, cam_pos.z, 1.0f);
+	cb.cameraPosition = float4(cam_pos.x, cam_pos.y, cam_pos.z, 1.0f);
 	
 	memcpy(constant_buffer_data_begin, &cb, sizeof(cb));
 }

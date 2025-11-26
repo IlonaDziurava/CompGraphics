@@ -31,7 +31,8 @@ namespace cg::renderer
 		DirectX::XMMATRIX mwpMatrix;
 		DirectX::XMMATRIX shadowMatrix;
 		DirectX::XMMATRIX worldMatrix;
-		light light;
+		float4 lightPosition;
+		float4 lightColor;
 		float4 cameraPosition;
 	};
 
