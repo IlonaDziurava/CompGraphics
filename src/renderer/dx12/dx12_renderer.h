@@ -30,7 +30,9 @@ namespace cg::renderer
 	{
 		DirectX::XMMATRIX mwpMatrix;
 		DirectX::XMMATRIX shadowMatrix;
+		DirectX::XMMATRIX worldMatrix;
 		light light;
+		float4 cameraPosition;
 	};
 
 	class descriptor_heap
@@ -104,6 +106,8 @@ namespace cg::renderer
 		HANDLE fence_event;
 		ComPtr<ID3D12Fence> fence;
 		UINT64 fence_values[frame_number];
+
+		float light_angle = 0.0f;
 
 		void load_pipeline();
 		void load_assets();

@@ -54,7 +54,41 @@ void cg::renderer::dx12_renderer::update()
 	frame_duration = duration.count();
 	current_time = now;
 
-	cb.mwpMatrix = camera->get_dxm_mvp_matrix();
+	// Get world matrix from model and convert to DirectX format
+	auto world_mat = model->get_world_matrix();
+	DirectX::XMFLOAT4X4 world_mat_dx;
+	world_mat_dx._11 = world_mat[0].x; world_mat_dx._12 = world_mat[0].y; world_mat_dx._13 = world_mat[0].z; world_mat_dx._14 = world_mat[0].w;
+	world_mat_dx._21 = world_mat[1].x; world_mat_dx._22 = world_mat[1].y; world_mat_dx._23 = world_mat[1].z; world_mat_dx._24 = world_mat[1].w;
+	world_mat_dx._31 = world_mat[2].x; world_mat_dx._32 = world_mat[2].y; world_mat_dx._33 = world_mat[2].z; world_mat_dx._34 = world_mat[2].w;
+	world_mat_dx._41 = world_mat[3].x; world_mat_dx._42 = world_mat[3].y; world_mat_dx._43 = world_mat[3].z; world_mat_dx._44 = world_mat[3].w;
+	DirectX::XMMATRIX world_matrix = DirectX::XMLoadFloat4x4(&world_mat_dx);
+	cb.worldMatrix = world_matrix;
+	
+	// Compute full MVP matrix: World * View * Projection
+	cb.mwpMatrix = world_matrix * camera->get_dxm_mvp_matrix();
+	
+	// Animate light position in a circular orbit
+	light_angle += frame_duration * 0.5f; // Rotate at 0.5 radians per second
+	if (light_angle > 2.0f * 3.14159f) {
+		light_angle -= 2.0f * 3.14159f;
+	}
+	
+	// Set light position orbiting around the scene
+	float radius = 5.0f;
+	cb.light.position = DirectX::XMFLOAT4(
+		radius * cosf(light_angle),
+		3.0f,
+		radius * sinf(light_angle),
+		1.0f
+	);
+	
+	// Set light color (warm white with slight yellow tint)
+	cb.light.color = DirectX::XMFLOAT4(1.0f, 0.95f, 0.8f, 1.0f);
+	
+	// Get camera position for specular lighting
+	auto cam_pos = camera->get_position();
+	cb.cameraPosition = DirectX::XMFLOAT4(cam_pos.x, cam_pos.y, cam_pos.z, 1.0f);
+	
 	memcpy(constant_buffer_data_begin, &cb, sizeof(cb));
 }
 
