@@ -255,10 +255,9 @@ void cg::renderer::dx12_renderer::create_root_signature(const D3D12_STATIC_SAMPL
 
 std::filesystem::path cg::renderer::dx12_renderer::get_shader_path()
 {
-	// DO Lab: 3.05 Compile shaders
-	WCHAR buffer[MAX_PATH];
+	char buffer[MAX_PATH];
 	GetModuleFileName(nullptr, buffer, MAX_PATH);
-	return std::filesystem::path(buffer).parent_path() / shader_name;
+	return std::filesystem::path(buffer).parent_path() / "shaders.hlsl";
 }
 
 ComPtr<ID3DBlob> cg::renderer::dx12_renderer::compile_shader(const std::string& entrypoint, const std::string& target)
@@ -269,6 +268,7 @@ ComPtr<ID3DBlob> cg::renderer::dx12_renderer::compile_shader(const std::string& 
 #ifdef _DEBUG
 	compile_flags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
+	std::filesystem::path shader_path = get_shader_path();
 	HRESULT result = D3DCompileFromFile(
 			shader_path.wstring().c_str(),
 			nullptr,
@@ -290,10 +290,8 @@ void cg::renderer::dx12_renderer::create_pso()
 {
 	// DO Lab: 3.05 Compile shaders
 	// DO Lab: 3.05 Setup a PSO descriptor and create a PSO
-	ComPtr<ID3DBlob> vertex_shader = compile_shader(
-			get_shader_path(shader_name), "VSMain", "vs_5_0");
-	ComPtr<ID3DBlob> pixel_shader = compile_shader(
-			get_shader_path(shader_name), "PSMain", "ps_5_0");
+	ComPtr<ID3DBlob> vertex_shader = compile_shader("VSMain", "vs_5_0");
+	ComPtr<ID3DBlob> pixel_shader = compile_shader("PSMain", "ps_5_0");
 
 	D3D12_INPUT_ELEMENT_DESC input_descriptors[] = {
 			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,
@@ -419,7 +417,7 @@ void cg::renderer::dx12_renderer::load_assets()
 
 	// DO Lab: 3.07 Create a fence and fence event
 	create_root_signature(nullptr, 0);
-	create_pso("shaders.hlsl");
+	create_pso();
 	create_command_allocators();
 	create_command_list();
 
@@ -438,7 +436,7 @@ void cg::renderer::dx12_renderer::load_assets()
 	for (size_t i = 0; i < num_shapes; i++) {
 		auto vertex_buffer_data = model->get_vertex_buffers()[i];
 		const UINT vertex_buffer_size = static_cast<UINT>(
-				vertex_buffer_data->get_size_in_bytes());
+				vertex_buffer_data->size_bytes());
 
 		std::wstring vertex_buffer_name(L"Vertex buffer ");
 		vertex_buffer_name += std::to_wstring(i);
@@ -457,8 +455,8 @@ void cg::renderer::dx12_renderer::load_assets()
 
 		auto index_buffer_data = model->get_index_buffers()[i];
 		const UINT index_buffer_size = static_cast<UINT>(
-				index_buffer_data->get_size_in_bytes());
-
+			index_buffer_data->size_bytes());
+			
 		std::wstring index_buffer_name(L"Index buffer ");
 		index_buffer_name += std::to_wstring(i);
 
